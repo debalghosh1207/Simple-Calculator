@@ -14,6 +14,9 @@ int multiply(int first, int second) {
 float divide(int first, int second) {
   return Operations::divide(first, second);
 }
+int modulus(int first, int second) {
+  return Operations::modulus(first, second);
+}
 
 float Calculator::evaluate(String operation, int first, int second) {
   if (operation == "add")
@@ -24,6 +27,8 @@ float Calculator::evaluate(String operation, int first, int second) {
     return multiply(first, second);
   if (operation == "divide")
     return divide(first, second);
+  if (operation == "modulus")
+    return modulus(first, second);
 
   return 0;
 }

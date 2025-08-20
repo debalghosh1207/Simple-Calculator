@@ -19,6 +19,7 @@ echo "2. Testing the calculator..."
 echo "Testing basic operations:"
 ./basic-calculator add 5 3
 echo "5 + 3 = $(./basic-calculator add 5 3)"
+echo "10 % 3 = $(./basic-calculator modulus 10 3)"
 echo "Version: $(./basic-calculator --version)"
 
 cd ..
@@ -27,10 +28,10 @@ echo ""
 echo "3. Release workflow steps:"
 echo ""
 echo "To create a new release:"
-echo "  a) Update version in CMakeLists.txt (currently shows 1.0.0)"
-echo "  b) Commit changes: git add CMakeLists.txt && git commit -m 'Bump version to 1.1.0'"
-echo "  c) Create tag: git tag v1.1.0"
-echo "  d) Push: git push origin main && git push origin v1.1.0"
+echo "  a) Update version in CMakeLists.txt (currently shows 1.1.0)"
+echo "  b) Commit changes: git add CMakeLists.txt && git commit -m 'Bump version to 1.2.0'"
+echo "  c) Create tag: git tag v1.2.0"
+echo "  d) Push: git push origin main && git push origin v1.2.0"
 echo "  e) GitHub Actions will automatically create the release"
 echo ""
 

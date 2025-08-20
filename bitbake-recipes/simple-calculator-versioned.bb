@@ -10,7 +10,7 @@ inherit cmake
 SRC_URI = "git://github.com/debalghosh1207/Simple-Calculator.git;branch=main;protocol=https;tag=v${PV}"
 
 # Set to latest release version - update this when upgrading
-PV = "1.0.0"
+PV = "1.1.0"
 
 # Optional: Add a python function to auto-detect latest release
 python do_fetch_prepend() {

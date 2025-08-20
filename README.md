@@ -4,7 +4,7 @@ A simple command-line calculator application built with C++ and CMake.
 
 ## Features
 
-- Basic arithmetic operations: add, subtract, multiply, divide
+- Basic arithmetic operations: add, subtract, multiply, divide, modulus
 - Version information support
 - GitHub release versioning
 - Bitbake/Yocto integration ready
@@ -26,6 +26,7 @@ make
 ./basic-calculator subtract 10 4
 ./basic-calculator multiply 6 7
 ./basic-calculator divide 15 3
+./basic-calculator modulus 10 3
 
 # Version information
 ./basic-calculator --version
@@ -35,7 +36,7 @@ make
 
 This project uses semantic versioning (MAJOR.MINOR.PATCH) with automated GitHub releases.
 
-Current version: 1.0.0
+Current version: 1.1.0
 
 ## Bitbake Integration
 

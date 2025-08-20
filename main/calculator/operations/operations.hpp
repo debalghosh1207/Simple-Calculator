@@ -7,6 +7,7 @@ public:
   static int subtract(int first, int second);
   static int multiply(int first, int second);
   static float divide(int first, int second);
+  static int modulus(int first, int second);
 };
 
 #endif

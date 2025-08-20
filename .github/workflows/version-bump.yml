@@ -1,0 +1,80 @@
+name: Version Bump
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_type:
+        description: 'Type of version bump'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+
+jobs:
+  bump-version:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Setup Git
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        
+    - name: Get current version
+      id: current_version
+      run: |
+        MAJOR=$(grep "set(PROJECT_VERSION_MAJOR" CMakeLists.txt | sed 's/.*set(PROJECT_VERSION_MAJOR \([0-9]*\)).*/\1/')
+        MINOR=$(grep "set(PROJECT_VERSION_MINOR" CMakeLists.txt | sed 's/.*set(PROJECT_VERSION_MINOR \([0-9]*\)).*/\1/')
+        PATCH=$(grep "set(PROJECT_VERSION_PATCH" CMakeLists.txt | sed 's/.*set(PROJECT_VERSION_PATCH \([0-9]*\)).*/\1/')
+        echo "major=$MAJOR" >> $GITHUB_OUTPUT
+        echo "minor=$MINOR" >> $GITHUB_OUTPUT
+        echo "patch=$PATCH" >> $GITHUB_OUTPUT
+        echo "current=$MAJOR.$MINOR.$PATCH" >> $GITHUB_OUTPUT
+        
+    - name: Calculate new version
+      id: new_version
+      run: |
+        MAJOR=${{ steps.current_version.outputs.major }}
+        MINOR=${{ steps.current_version.outputs.minor }}
+        PATCH=${{ steps.current_version.outputs.patch }}
+        
+        if [ "${{ github.event.inputs.version_type }}" = "major" ]; then
+          MAJOR=$((MAJOR + 1))
+          MINOR=0
+          PATCH=0
+        elif [ "${{ github.event.inputs.version_type }}" = "minor" ]; then
+          MINOR=$((MINOR + 1))
+          PATCH=0
+        else
+          PATCH=$((PATCH + 1))
+        fi
+        
+        echo "major=$MAJOR" >> $GITHUB_OUTPUT
+        echo "minor=$MINOR" >> $GITHUB_OUTPUT
+        echo "patch=$PATCH" >> $GITHUB_OUTPUT
+        echo "version=$MAJOR.$MINOR.$PATCH" >> $GITHUB_OUTPUT
+        
+    - name: Update CMakeLists.txt
+      run: |
+        sed -i "s/set(PROJECT_VERSION_MAJOR [0-9]*)/set(PROJECT_VERSION_MAJOR ${{ steps.new_version.outputs.major }})/" CMakeLists.txt
+        sed -i "s/set(PROJECT_VERSION_MINOR [0-9]*)/set(PROJECT_VERSION_MINOR ${{ steps.new_version.outputs.minor }})/" CMakeLists.txt
+        sed -i "s/set(PROJECT_VERSION_PATCH [0-9]*)/set(PROJECT_VERSION_PATCH ${{ steps.new_version.outputs.patch }})/" CMakeLists.txt
+        
+    - name: Commit changes
+      run: |
+        git add CMakeLists.txt
+        git commit -m "Bump version to ${{ steps.new_version.outputs.version }}"
+        git push
+        
+    - name: Create and push tag
+      run: |
+        git tag "v${{ steps.new_version.outputs.version }}"
+        git push origin "v${{ steps.new_version.outputs.version }}"
